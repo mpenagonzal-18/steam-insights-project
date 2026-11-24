@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 from psycopg2.extras import execute_values
-from db_conn import get_connection
+from scripts.db_conn import get_connection, db_name
 
 def run(data_path=None):
-    data_path = Path(data_path) if data_path else Path(__file__).resolve().parent / "data" / "raw"
+    data_path = Path(data_path) if data_path else Path(__file__).resolve().parent.parent / "data" / "raw"
     metadata_path = data_path / "games_metadata.json"
     print("Inserting relational data...")
     with get_connection() as conn:
