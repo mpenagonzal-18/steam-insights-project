@@ -12,7 +12,7 @@ queries = [
     ("q6_recommendations_avg_playtime.sql", "6. Average playing time by recommendation"),
     ("q7_top3_rated_per_release_year.sql", "7. Top 3 rated games per release year"),
     ("q8_positive_change_monthly.sql", "8. Monthly positive recommendation trends"),
-    ("q9_higher_positive_than_avg_cats.sql", "9. Games outperforming their category"),
+    ("q9_higher_positive_than_avg_cat.sql", "9. Games outperforming their category"),
     ("q10_simulating_discounts_top10.sql", "10. Simulating a discount campaign")
 ]
 # Conexión a la base de datos
