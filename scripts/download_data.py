@@ -9,7 +9,7 @@ def run():
         )
     )
     # MOVEMOS EL DATASET DESDE LA CACHÉ AL DIRECTORIO NUEVO
-    target_dir = Path(__file__).resolve().parent / "data" / "raw"
+    target_dir = Path(__file__).resolve().parent.parent / "data" / "raw"
     target_dir.mkdir(parents = True, exist_ok = True)
 
     shutil.copytree(cache_path, target_dir, dirs_exist_ok=True)
