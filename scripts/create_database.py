@@ -1,5 +1,5 @@
 from psycopg2 import sql
-from db_conn import get_connection, db_name
+from scripts.db_conn import get_connection, db_name
 
 def run():
     print("CONNECTING TO POSTGRESQL...")
