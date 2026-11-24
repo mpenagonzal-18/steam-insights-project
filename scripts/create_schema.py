@@ -1,4 +1,4 @@
-from db_conn import get_connection
+from scripts.db_conn import get_connection, db_name
 
 def run():
     print("Creating relational model...")
