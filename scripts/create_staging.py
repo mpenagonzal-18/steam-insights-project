@@ -1,8 +1,8 @@
 from pathlib import Path
-from db_conn import get_connection
+from scripts.db_conn import get_connection, db_name
 
 def run(data_path=None):
-    data_path = Path(data_path) if data_path else Path(__file__).resolve().parent / "data" / "raw"
+    data_path = Path(data_path) if data_path else Path(__file__).resolve().parent.parent / "data" / "raw"
     print("Creating staging tables...")
     with get_connection() as conn:
         with conn.cursor() as cur:
