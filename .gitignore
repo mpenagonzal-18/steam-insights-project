@@ -1,0 +1,50 @@
+# ==========================================
+# PROJECT B - STEAM DATABASE
+# ==========================================
+
+# 1. PostgreSQL credentials
+password.txt
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# 2. Downloaded datasets
+data/raw/
+data/cache/
+*.csv
+*.json
+
+# 3. Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 4. Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# 5. Python testing and analysis cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# 6. IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 7. Temporary files and logs
+*.log
+*.tmp
+*.bak
+*.swp
+
+# 8. Local Streamlit secrets
+.streamlit/credentials.toml
