@@ -284,7 +284,7 @@ In addition to this repository, the assignment requests a report and presentatio
 
 - **Dataset:** [Game Recommendations on Steam](https://www.kaggle.com/datasets/antonkozyriev/game-recommendations-on-steam), published on Kaggle by antonkozyriev. Check the dataset page for the applicable license and attribution before publication.
 - **Project:** Information Technology, Project B.
-- **Team members and query authors:** add the actual names and contributions before submission.
+- **Team members and query authors:** Markel Peña and Manuel Fernández.
 
 ---
 
