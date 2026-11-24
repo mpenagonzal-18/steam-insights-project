@@ -39,7 +39,8 @@ proyecto_B/
 ├── evidence/                      # ER diagram, relational model, other evidence
 │   ├── er_diagram.png              # Conceptual ER diagram
 │   ├── relational_model.png        # Logical relational model
-│   └── previous_script/           # Archived original implementation
+│   ├── previous_script/           # Archived original implementation
+│   └── steam_schema_created.png  # PostgreSQL schema screenshot
 ├── scripts/
 │   ├── db_conn.py                 # Shared PostgreSQL connection
 │   ├── download_data.py          # Download the Kaggle dataset
@@ -60,6 +61,7 @@ proyecto_B/
 │   ├── q9_higher_positive_than_avg_cat.sql
 │   └── q10_simulating_discounts_top10.sql
 ├── app.py                        # Streamlit dashboard
+├── requirements.txt             # Python dependencies
 ├── run_data_pipeline_a_d.py     # Data pipeline entry point
 ├── sql_queries.py               # SQL query runner
 ├── README.md
@@ -76,11 +78,11 @@ proyecto_B/
 - An accessible [Kaggle](https://www.kaggle.com/) dataset download (internet access for the initial download)
 - Python packages: `psycopg2-binary`, `kagglehub`, `streamlit`, and `plotly`
 
-> **Dependency note:** The repository currently does not contain a requirements file. Install the four packages below. A future `requirements.txt` can make setup more reproducible.
+Install all four required Python packages from the committed `requirements.txt`.
 
 ## Getting started (Windows / PowerShell)
 
-Run the following commands from the **repository root** (`proyecto_B/`).
+Run the following commands from the **repository root** (`steam-recommendations-project/`).
 
 ### 1. Clone the repository
 
@@ -89,14 +91,14 @@ git clone https://github.com/mpenagonzal-18/steam-recommendations-project.git
 cd steam-recommendations-project
 ```
 
-Replace the placeholders with the actual repository address. Alternatively, open the existing local project in VS Code.
+Alternatively, open your existing local copy in VS Code.
 
 ### 2. Create a virtual environment and install packages
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install psycopg2-binary kagglehub streamlit plotly
+python -m pip install -r requirements.txt
 ```
 
 If PowerShell prevents activation, you can still use `.\.venv\Scripts\python.exe` instead of `python` for subsequent commands.
@@ -124,13 +126,12 @@ The database name passed by each script must be used as-is (`dbname=dbname`). Th
 
 ### 4. Build and populate the database
 
-**Before running the pipeline on a fresh clone, make these code fixes:**
+**Integration note (pending fixes in the published code at the last review):**
 
-1. In `scripts/download_data.py`, change the target directory to `Path(__file__).resolve().parent.parent / "data" / "raw"`.
-2. In `scripts/create_staging.py` and `scripts/insert_data.py`, change their fallback `data/raw` path to use `.parent.parent`.
-3. In `scripts/create_database.py`, `create_staging.py`, `analyze_data.py`, `create_schema.py`, and `insert_data.py`, change `from db_conn import ...` to `from scripts.db_conn import ...` so package imports work when launched from the repository root.
+- In `scripts/download_data.py`, use `Path(__file__).resolve().parent.parent / "data" / "raw"` for `target_dir`, so downloads are placed in the repository root rather than under `scripts/`.
+- In `scripts/create_database.py`, use `from scripts.db_conn import get_connection, db_name`, consistent with the other modules and the pipeline runner.
 
-These are known integration issues in the currently published scripts. Until they are fixed, the commands below describe the intended workflow, **not a verified clean-clone execution**.
+The project is documented for reproducibility, but a full clean-clone execution against a local PostgreSQL instance has not yet been independently verified. Apply the two changes above before running the pipeline.
 
 ```powershell
 python run_data_pipeline_a_d.py
@@ -155,7 +156,7 @@ The runner executes these stages in sequence:
 python sql_queries.py
 ```
 
-The Python runner reads queries from `sql/` and executes them using the shared PostgreSQL connection. The Q9 filename must match the singular `q9_higher_positive_than_avg_cat.sql` in both `sql_queries.py` and `app.py`. The Q10 `RETURNING` output may not be displayed by this multi-statement runner because `ROLLBACK` is the final statement; the dashboard uses a dedicated simulation function that retrieves those rows before rollback. You can also inspect each file individually in pgAdmin. If you rename any SQL file, update the corresponding references in `sql_queries.py` and `app.py`.
+The Python runner reads queries from `sql/` and executes them using the shared PostgreSQL connection. Both the query runner and the dashboard reference the existing file `q9_higher_positive_than_avg_cat.sql`. The Q10 `RETURNING` output may not be displayed by this multi-statement runner because `ROLLBACK` is the final statement; the dashboard uses a dedicated simulation function that retrieves those rows before rollback. You can also inspect each file individually in pgAdmin. If you rename any SQL file, update the corresponding references in `sql_queries.py` and `app.py`.
 
 ### 6. Launch the dashboard
 
@@ -208,7 +209,7 @@ The `staging` schema includes the three raw CSV tables and `metadata_raw` for JS
 | 9 | Which games exceed the average positive rating of their rating category? | Advanced — category comparison / subquery or optimized CTE |
 | 10 | What would a 10% promotional discount do to selected game prices? | Advanced — `BEGIN` / `UPDATE` / `RETURNING` / `ROLLBACK` |
 
-**Important:** The committed Q9 currently uses correlated subqueries and can be expensive. The dashboard offers a CTE-based optimized version; replacing the source SQL with that version is recommended. Q10 is a temporary update demonstration, not a permanent price change.
+**Important:** Q9 currently uses correlated subqueries and can be expensive. The dashboard offers a CTE-based optimized mode; an optimized CTE version can also replace the source SQL to improve the standalone query runner. Q10 is a temporary update demonstration, not a permanent price change.
 
 The course report should document **each query's question, SQL source, sample output, interpretation, and author**. Example values must be obtained by running SQL on the actual database, not fabricated.
 
@@ -245,7 +246,7 @@ Common issues:
 
 - **`relation "steam.games" does not exist`** — ensure the query tool is connected to `steam_db` (not `postgres`) and that the schema-creation/load stages completed.
 - **`password.txt` not found** — place it in the repository root and check `root = Path(__file__).resolve().parent.parent` in `scripts/db_conn.py`.
-- **Missing Python package** — activate the intended virtual environment and run `python -m pip install psycopg2-binary kagglehub streamlit plotly`.
+- **Missing Python package** — activate the intended virtual environment and run `python -m pip install -r requirements.txt`.
 - **Large queries are slow** — use the optimized Q9, apply appropriate filters, and consider `ANALYZE steam.recommendations;` after initial loading; do not remove indexes defined by the schema.
 - **SQL file missing in the dashboard** — check that its name in `sql/` matches the corresponding entry in `app.py`.
 
@@ -270,11 +271,11 @@ venv/
 Thumbs.db
 ```
 
-Keep **`.streamlit/config.toml` tracked** because it defines the dashboard theme. The `data/raw/` directory is intended to be created by the download stage (after correcting the path noted above) and should not be committed. Do not commit `password.txt` even if the project is private.
+Keep **`.streamlit/config.toml` tracked** because it defines the dashboard theme. The `data/raw/` directory is created by the download stage once its path is corrected, and should not be committed. Do not commit `password.txt` even if the project is private.
 
 ## Current verification status
 
-The repository structure, SQL files, dashboard source, and diagram links have been reviewed. A full fresh-clone data load and Streamlit run against a local PostgreSQL instance have **not** been verified. Fix the imports, paths, and Q9 filename references above before submitting, and run the complete pipeline, SQL runner, and app locally. Commit a dependency file if you add one.
+The repository structure, SQL files, dashboard source, and diagram links have been reviewed. A full fresh-clone data load and Streamlit run against a local PostgreSQL instance have **not** been verified. The Q9 filename references and dependency file are already correct. Apply the two pending integration fixes documented above, then run the complete pipeline, SQL runner, and app locally before submitting.
 
 ## Course deliverables
 
@@ -284,7 +285,7 @@ In addition to this repository, the assignment requests a report and presentatio
 
 - **Dataset:** [Game Recommendations on Steam](https://www.kaggle.com/datasets/antonkozyriev/game-recommendations-on-steam), published on Kaggle by antonkozyriev. Check the dataset page for the applicable license and attribution before publication.
 - **Project:** Information Technology, Project B.
-- **Team members and query authors:** Markel Peña and Manuel Fernández.
+- **Team members and query authors:** add the actual names and contributions before submission.
 
 ---
 
