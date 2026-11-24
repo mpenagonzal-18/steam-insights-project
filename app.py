@@ -193,7 +193,7 @@ QUERIES = [
     ("q6_recommendations_avg_playtime.sql", "Average playtime by recommendation", "Standard"),
     ("q7_top3_rated_per_release_year.sql", "Best three games per release year", "Advanced"),
     ("q8_positive_change_monthly.sql", "Monthly recommendation change", "Advanced"),
-    ("q9_higher_positive_than_avg_cats.sql", "Games above category average", "Advanced"),
+    ("q9_higher_positive_than_avg_cat.sql", "Games above category average", "Advanced"),
     ("q10_simulating_discounts_top10.sql", "Simulate a discount campaign", "Advanced"),
 ]
 
